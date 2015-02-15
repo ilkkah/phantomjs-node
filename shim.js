@@ -5531,6 +5531,19 @@ require.define("/shim.coffee", function (require, module, exports, __dirname, __
           return cb.apply(this, argumentsWithExtraArgs);
         };
       },
+      onResourceReceived: function() {
+        var args, cb, fn;
+        fn = arguments[0], cb = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+        if (cb == null) cb = (function() {});
+        return page.onResourceReceived = function() {
+          var argumentsWithExtraArgs;
+          argumentsWithExtraArgs = [].slice.apply(arguments).concat(args);
+          fn = fn.replace(/function.*\(/, 'function x(');
+          eval(fn);
+          x.apply(this, argumentsWithExtraArgs);
+          return cb.apply(this, argumentsWithExtraArgs);
+        };
+      },
       injectJs: function(js, cb) {
         if (cb == null) cb = function() {};
         return cb(page.injectJs(js));
